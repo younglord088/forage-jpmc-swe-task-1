@@ -18,6 +18,33 @@ class ClientTest(unittest.TestCase):
 
 
   """ ------------ Add more unit tests ------------ """
+  def test_getDataPoint_emptyQuote(self):
+    quote = {}
+    self.assertIsNone(getDataPoint(quote))
+
+  def test_getDataPoint_missingAsk(self):
+      quote = {'top_bid': {'price': 120.48, 'size': 109}, 'id': '0.109974697771', 'stock': 'ABC'}
+      self.assertIsNone(getDataPoint(quote))
+
+  def test_getDataPoint_missingBid(self):
+      quote = {'top_ask': {'price': 121.2, 'size': 36}, 'id': '0.109974697771', 'stock': 'ABC'}
+      self.assertIsNone(getDataPoint(quote))
+
+  def test_getDataPoint_negativePrices(self):
+      quotes = [
+          {'top_ask': {'price': -121.2, 'size': 36}, 'timestamp': '2019-02-11 22:06:30.572453', 'top_bid': {'price': 120.48, 'size': 109}, 'id': '0.109974697771', 'stock': 'ABC'},
+          {'top_ask': {'price': 121.2, 'size': 36}, 'timestamp': '2019-02-11 22:06:30.572453', 'top_bid': {'price': -120.48, 'size': 109}, 'id': '0.109974697771', 'stock': 'DEF'}
+      ]
+      for quote in quotes:
+          self.assertIsNone(getDataPoint(quote))
+
+  def test_getDataPoint_invalidPriceTypes(self):
+      quotes = [
+          {'top_ask': {'price': '121.2', 'size': 36}, 'timestamp': '2019-02-11 22:06:30.572453', 'top_bid': {'price': 120.48, 'size': 109}, 'id': '0.109974697771', 'stock': 'ABC'},
+          {'top_ask': {'price': 121.2, 'size': 36}, 'timestamp': '2019-02-11 22:06:30.572453', 'top_bid': {'price': '120.48', 'size': 109}, 'id': '0.109974697771', 'stock': 'DEF'}
+      ]
+      for quote in quotes:
+          self.assertIsNone(getDataPoint(quote))
 
 
 
